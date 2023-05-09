@@ -22,8 +22,13 @@ jobs:
       - name: Package WAR file
         run: chmod +x build-war.sh && ./build-war.sh
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          name: helloworld.war
-          path: helloworld.war
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      - name: Upload artifact to S3
+        run: |
+         aws s3 cp helloworld.war s3://beehyvstatebucketforinternalproject/war/
